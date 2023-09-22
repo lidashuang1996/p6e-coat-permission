@@ -17,9 +17,7 @@ public class SchedulingConfig {
 
     @Bean
     public ThreadPoolTaskScheduler injectThreadPoolTaskScheduler() {
-        final ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-        taskScheduler.setThreadNamePrefix("P6ePermissionTaskScheduler-");
-        return taskScheduler;
+        return new ThreadPoolTaskScheduler();
     }
 
 }

@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 )
 public class PermissionConfigImpl implements PermissionConfig {
 
-    @Value("#{'${spring.r2dbc.url}'}")
+    @Value("#{'${spring.r2dbc.url}' ?: '${spring.datasource.url}'}")
     private String url;
 
-    @Value("#{'${spring.r2dbc.username}'}")
+    @Value("#{'${spring.r2dbc.username}' ?: '${spring.datasource.url}'}")
     private String username;
 
-    @Value("#{'${spring.r2dbc.password}'}")
+    @Value("#{'${spring.r2dbc.password}' ?: '${spring.datasource.url}'}")
     private String password;
 
     @Override
