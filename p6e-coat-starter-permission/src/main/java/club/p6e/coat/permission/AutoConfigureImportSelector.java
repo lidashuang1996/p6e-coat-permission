@@ -61,7 +61,7 @@ public class AutoConfigureImportSelector implements ImportSelector {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("AutoConfigureImportSelector >> ", e);
+            LOGGER.error("select imports >>> ", e);
         }
         return register.toArray(new String[0]);
     }

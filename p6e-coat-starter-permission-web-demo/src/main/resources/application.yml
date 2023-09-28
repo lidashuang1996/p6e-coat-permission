@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: r2dbc:pool:postgres://your_database_ip:5432/your_database_name
+    username: your_database_username
+    password: your_database_password
+    driverClassName: org.postgresql.Driver
