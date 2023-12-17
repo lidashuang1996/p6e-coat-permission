@@ -74,7 +74,7 @@ public class PermissionPathMatcher {
                     final String mark = model.getGid() + "_" + model.getUid();
                     final List<PermissionDetails> list = cache.get(pattern);
                     list.removeIf(item -> mark.equals(item.getGid() + "_" + item.getUid()));
-                    LOGGER.info("[ REGISTER (ADD/REPLACE) ] " + path + " >>> " + model);
+                    LOGGER.info("[ REGISTER (ADD/REPLACE) ] " + path + "(" + model.getMethod() + ") >>> " + model);
                     cache.get(parser.parse(path)).add(model);
                     return;
                 }

@@ -1,12 +1,11 @@
 package club.p6e.coat.permission;
 
+import club.p6e.coat.common.utils.SpringUtil;
 import club.p6e.coat.permission.repository.PermissionRepository;
-import club.p6e.coat.permission.utils.SpringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 

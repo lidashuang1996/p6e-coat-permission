@@ -36,7 +36,7 @@ public class PermissionValidatorImpl implements PermissionValidator {
     /**
      * 验证是否具备权限
      *
-     * @param path    请求的路径
+     * @param path   请求的路径
      * @param method 请求的方法
      * @param groups 请求的用户权限组
      * @return Mono/PermissionDetails 通过权限的权限信息对象
@@ -48,7 +48,7 @@ public class PermissionValidatorImpl implements PermissionValidator {
             if (permissions != null && !permissions.isEmpty()) {
                 for (final PermissionDetails permission : permissions) {
                     final String pm = permission.getMethod();
-                    if (pm != null && ("*".equals(pm) || pm.equalsIgnoreCase(method))) {
+                    if ("*".equals(pm) || method.equalsIgnoreCase(pm)) {
                         return Mono.just(permission);
                     }
                 }
