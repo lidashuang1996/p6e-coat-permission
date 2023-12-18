@@ -1,7 +1,6 @@
 package club.p6e.coat.permission;
 
 import org.springframework.context.annotation.Import;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.lang.annotation.*;
 
