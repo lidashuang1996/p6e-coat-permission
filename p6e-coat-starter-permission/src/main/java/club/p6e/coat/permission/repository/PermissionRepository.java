@@ -49,8 +49,7 @@ public class PermissionRepository {
             "           \"config\"   " +
             "       FROM   " +
             "           \"p6e_permission_url\"    " +
-            "       ORDER BY \"id\" ASC" +
-            "       LIMIT :limit OFFSET :offset   " +
+            "       ORDER BY \"id\" ASC    " +
             "   ) AS \"TU\"   " +
             "   LEFT JOIN   " +
             "       \"p6e_permission_url_group_relation_url\" AS \"TR\"   " +
@@ -60,7 +59,8 @@ public class PermissionRepository {
             "       \"p6e_permission_url_group\" AS \"TG\"   " +
             "   ON   " +
             "       \"TR\".\"gid\" = \"TG\".\"id\"   " +
-            ";";
+            "   LIMIT  $1  OFFSET  $2    " +
+            "    ;    ";
 
     /**
      * 连接工厂
@@ -84,14 +84,17 @@ public class PermissionRepository {
      * @return Flux/PermissionModel 查询数据结果
      */
     public Flux<PermissionModel> findAll(Integer page, Integer size) {
-        page = page == null ? 1 : (page <= 0 ? 1 : page);
-        size = size == null ? 16 : (size <= 0 ? 16 : (size > 200 ? 200 : size));
-        final String sql = SQL
-                .replace(":limit", String.valueOf(size))
-                .replace(":offset", String.valueOf((page - 1) * size));
+        final int cPage = page == null ? 1 : (page <= 0 ? 1 : page);
+        final int cSize = size == null ? 16 : (size <= 0 ? 16 : (size > 200 ? 200 : size));
         return Flux
                 .from(this.factory.create())
-                .flatMap(connection -> Mono.from(connection.createStatement(sql).execute()))
+                .flatMap(connection -> Mono.from(
+                        connection
+                                .createStatement(SQL)
+                                .bind("$1", cSize)
+                                .bind("$2", (cPage - 1) * cSize)
+                                .execute()
+                ))
                 .flatMap(result -> Flux.from(
                         result.map((row, metadata) -> {
                             final PermissionModel model = new PermissionModel();

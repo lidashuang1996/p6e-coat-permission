@@ -95,10 +95,8 @@ public final class PermissionTaskActuator {
      * @return 执行任务的结果
      */
     private Mono<Boolean> execute0(long version) {
-        final int page = 1;
-        final int size = 20;
         final List<PermissionDetails> list = new ArrayList<>();
-        return execute1(page, size, list)
+        return execute1(1, 20, list)
                 .map(b -> {
                     if (b) {
                         LOGGER.info("[TASK] successfully read data, list data >>> [" + list.size() + "].");
@@ -118,7 +116,7 @@ public final class PermissionTaskActuator {
      */
     private Mono<Boolean> execute1(int page, int size, List<PermissionDetails> list) {
         return execute2(page, size, list)
-                .flatMap(s -> s == size ? execute1(page + 1, size, list) : Mono.just(true))
+                .flatMap(len -> len == 0 ? Mono.just(true) : execute1(page + 1, size, list))
                 .onErrorResume(e -> Mono.just(false));
     }
 
