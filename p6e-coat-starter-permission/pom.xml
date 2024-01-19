@@ -15,15 +15,19 @@
     <description>p6e-coat-starter-permission</description>
 
     <dependencies>
+        <!--  R2DBC POOL [START]  -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
+            <groupId>io.r2dbc</groupId>
+            <artifactId>r2dbc-pool</artifactId>
         </dependency>
+        <!--  R2DBC POOL [END]  -->
 
+        <!--  R2DBC PostGreSQL [START]  -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
         </dependency>
+        <!--  R2DBC PostGreSQL [END]  -->
 
         <!-- p6e coat common [START] -->
         <dependency>

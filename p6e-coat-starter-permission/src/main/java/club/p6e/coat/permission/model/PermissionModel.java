@@ -15,15 +15,12 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class PermissionModel implements Serializable {
     private Integer uid;
-    private Integer gid;
     private String uUrl;
     private String uBaseUrl;
     private String uMethod;
-    private String uName;
-    private String uConfig;
-    private Integer gWeight;
+    private Integer gid;
     private String gMark;
-    private String gName;
+    private Integer gWeight;
     private String rConfig;
     private String rAttribute;
 }
