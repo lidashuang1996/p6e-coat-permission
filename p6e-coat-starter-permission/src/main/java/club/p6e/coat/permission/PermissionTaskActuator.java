@@ -1,13 +1,13 @@
 package club.p6e.coat.permission;
 
 import club.p6e.coat.common.utils.SpringUtil;
+import club.p6e.coat.permission.model.PermissionModel;
 import club.p6e.coat.permission.repository.PermissionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -74,11 +74,11 @@ public final class PermissionTaskActuator {
      */
     public void execute() {
         final LocalDateTime now = LocalDateTime.now();
-        LOGGER.info("[TASK] ==> now: " + now);
+        LOGGER.info("[TASK] ==> now: {}", now);
         LOGGER.info("[TASK] start executing permission update task.");
         final long currentVersion = task.version();
         if (version < currentVersion) {
-            if (Boolean.TRUE.equals(execute0(currentVersion).block())) {
+            if (Boolean.TRUE.equals(execute0(currentVersion))) {
                 version = currentVersion;
                 matcher.deleteExpiredVersionData(version);
             }
@@ -94,65 +94,44 @@ public final class PermissionTaskActuator {
      *
      * @return 执行任务的结果
      */
-    private Mono<Boolean> execute0(long version) {
-        final List<PermissionDetails> list = new ArrayList<>();
-        return execute1(1, 20, list)
-                .map(b -> {
-                    if (b) {
-                        LOGGER.info("[TASK] successfully read data, list data >>> [" + list.size() + "].");
-                        list.forEach(item -> matcher.register(item.setVersion(version)));
-                    }
-                    return b;
-                });
+    private boolean execute0(long version) {
+        final List<PermissionDetails> list = execute1();
+        if (list.isEmpty()) {
+            return false;
+        } else {
+            LOGGER.info("[TASK] successfully read data, list data >>> [{}].", list.size());
+            list.forEach(item -> matcher.register(item.setVersion(version)));
+            return true;
+        }
     }
 
-    /**
-     * 执行查询数据
-     *
-     * @param page 页码
-     * @param size 页长
-     * @param list 数据列表
-     * @return 查询数据是否完成
-     */
-    private Mono<Boolean> execute1(int page, int size, List<PermissionDetails> list) {
-        return execute2(page, size, list)
-                .flatMap(len -> len == 0 ? Mono.just(true) : execute1(page + 1, size, list))
-                .onErrorResume(e -> Mono.just(false));
-    }
-
-    /**
-     * 执行查询数据
-     *
-     * @param page 页码
-     * @param size 页长
-     * @param list 数据列表
-     * @return 查询数据的列表长度
-     */
-    private Mono<Integer> execute2(int page, int size, List<PermissionDetails> list) {
-        LOGGER.info("[TASK] execute query data >>> page: "
-                + page + ", size:  " + size + " ::: [" + list.size() + "].");
+    private List<PermissionDetails> execute1() {
+        int page = 1;
+        List<PermissionModel> tmp;
+        final List<PermissionModel> list = new ArrayList<>();
         final PermissionRepository repository = SpringUtil.getBean(PermissionRepository.class);
-        return repository
-                .findAll(page, size)
-                .collectList()
-                .map(l -> {
-                    list.addAll(l.stream().map(item -> {
-                        final PermissionDetails details = new PermissionDetails();
-                        details.setUid(item.getUid());
-                        details.setGid(item.getGid());
-                        details.setUrl(item.getUUrl());
-                        details.setBaseUrl(item.getUBaseUrl());
-                        details.setMethod(item.getUMethod());
-                        details.setMark(item.getGMark());
-                        details.setWeight(item.getGWeight());
-                        details.setConfig(item.getRConfig());
-                        details.setAttribute(item.getRAttribute());
-                        details.setPath(item.getUBaseUrl() + item.getUUrl());
-                        return details;
-                    }).toList());
-                    return l.size();
-                })
-                .onErrorResume(e -> Mono.just(0));
+        do {
+            tmp = repository.findPermission(page++, 20).collectList().block();
+            if (tmp != null) {
+                list.addAll(tmp);
+            }
+        } while (tmp != null && !tmp.isEmpty());
+        return new ArrayList<>() {{
+            for (PermissionModel item : list) {
+                add(new PermissionDetails()
+                        .setUid(item.getUid())
+                        .setGid(item.getGid())
+                        .setUrl(item.getUUrl())
+                        .setMethod(item.getUMethod())
+                        .setBaseUrl(item.getUBaseUrl())
+                        .setMark(item.getGMark())
+                        .setWeight(item.getGWeight())
+                        .setConfig(item.getRConfig())
+                        .setAttribute(item.getRAttribute())
+                        .setPath(item.getUBaseUrl() + item.getUUrl())
+                );
+            }
+        }};
     }
 
 }

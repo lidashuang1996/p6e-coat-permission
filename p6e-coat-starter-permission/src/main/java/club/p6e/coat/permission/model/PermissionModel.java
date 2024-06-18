@@ -14,10 +14,14 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 public class PermissionModel implements Serializable {
+    private Integer oid;
+    private Integer pid;
+
     private Integer uid;
     private String uUrl;
     private String uBaseUrl;
     private String uMethod;
+
     private Integer gid;
     private String gMark;
     private Integer gWeight;

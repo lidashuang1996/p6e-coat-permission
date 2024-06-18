@@ -74,12 +74,12 @@ public class PermissionPathMatcher {
                     final String mark = model.getGid() + "_" + model.getUid();
                     final List<PermissionDetails> list = cache.get(pattern);
                     list.removeIf(item -> mark.equals(item.getGid() + "_" + item.getUid()));
-                    LOGGER.info("[ REGISTER (ADD/REPLACE) ] " + path + "(" + model.getMethod() + ") >>> " + model);
+                    LOGGER.info("[ REGISTER (ADD/REPLACE) ] {}({}) >>> {}", path, model.getMethod(), model);
                     cache.get(parser.parse(path)).add(model);
                     return;
                 }
             }
-            LOGGER.info("[ REGISTER (ADD) ] " + path + "(" + model.getMethod() + ") >>> " + model);
+            LOGGER.info("[ REGISTER (ADD) ] {}({}) >>> {}", path, model.getMethod(), model);
             cache.put(parser.parse(path), new ArrayList<>(List.of(model)));
         }
     }
@@ -89,6 +89,7 @@ public class PermissionPathMatcher {
      *
      * @param path 路径内容
      */
+    @SuppressWarnings("ALL")
     public void unregister(PathPattern path) {
         cache.remove(path);
     }

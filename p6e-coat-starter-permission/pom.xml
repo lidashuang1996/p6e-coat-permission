@@ -15,6 +15,7 @@
     <description>p6e-coat-starter-permission</description>
 
     <dependencies>
+
         <!--  R2DBC POOL [START]  -->
         <dependency>
             <groupId>io.r2dbc</groupId>
@@ -28,26 +29,31 @@
             <artifactId>r2dbc-postgresql</artifactId>
         </dependency>
         <!--  R2DBC PostGreSQL [END]  -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+        </dependency>
 
         <!-- p6e coat common [START] -->
         <dependency>
             <groupId>club.p6e.coat</groupId>
             <artifactId>p6e-coat-starter-common</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-data-jpa</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web-flux</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- p6e coat common [END] -->
+
+        <!-- Spring Web Flux [ START ] -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <!-- scope provided dependency -->
+            <scope>provided</scope>
+        </dependency>
+        <!-- Spring Web Flux [ END ] -->
+
     </dependencies>
 </project>
