@@ -119,6 +119,8 @@ public final class PermissionTaskActuator {
         return new ArrayList<>() {{
             for (PermissionModel item : list) {
                 add(new PermissionDetails()
+                        .setOid(item.getOid())
+                        .setPid(item.getPid())
                         .setUid(item.getUid())
                         .setGid(item.getGid())
                         .setUrl(item.getUUrl())

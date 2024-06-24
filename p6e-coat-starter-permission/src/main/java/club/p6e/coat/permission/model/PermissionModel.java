@@ -25,6 +25,7 @@ public class PermissionModel implements Serializable {
     private Integer gid;
     private String gMark;
     private Integer gWeight;
+
     private String rConfig;
     private String rAttribute;
 }

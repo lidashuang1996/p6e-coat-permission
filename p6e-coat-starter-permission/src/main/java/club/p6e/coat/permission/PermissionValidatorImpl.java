@@ -43,17 +43,32 @@ public class PermissionValidatorImpl implements PermissionValidator {
      */
     @Override
     public Mono<PermissionDetails> execute(String path, String method, List<String> groups) {
-        System.out.println(path);
-        System.out.println(method);
-        System.out.println(groups);
         if (groups != null) {
             final List<PermissionDetails> permissions = matcher.match(path);
-            System.out.println("permissions >> " + permissions);
             if (permissions != null && !permissions.isEmpty()) {
                 for (final PermissionDetails permission : permissions) {
                     final String pm = permission.getMethod();
                     final String pg = String.valueOf(permission.getGid());
                     if (groups.contains(pg) && ("*".equals(pm) || method.equalsIgnoreCase(pm))) {
+                        return Mono.just(permission);
+                    }
+                }
+            }
+        }
+        return Mono.empty();
+    }
+
+    @Override
+    public Mono<PermissionDetails> execute(String path, String method, String project, List<String> groups) {
+        if (groups != null) {
+            final List<PermissionDetails> permissions = matcher.match(path);
+            if (permissions != null && !permissions.isEmpty()) {
+                for (final PermissionDetails permission : permissions) {
+                    final String pm = permission.getMethod();
+                    final String pg = String.valueOf(permission.getGid());
+                    if (groups.contains(pg)
+                            && ("*".equals(pm) || method.equalsIgnoreCase(pm))
+                            && String.valueOf(permission.getPid()).equals(project)) {
                         return Mono.just(permission);
                     }
                 }

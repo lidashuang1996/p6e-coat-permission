@@ -15,6 +15,8 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class PermissionDetails implements Serializable {
 
+    private Integer oid;
+    private Integer pid;
     private Integer uid;
     private Integer gid;
     private String url;
