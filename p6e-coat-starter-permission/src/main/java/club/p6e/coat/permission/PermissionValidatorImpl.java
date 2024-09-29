@@ -49,7 +49,8 @@ public class PermissionValidatorImpl implements PermissionValidator {
                 for (final PermissionDetails permission : permissions) {
                     final String pm = permission.getMethod();
                     final String pg = String.valueOf(permission.getGid());
-                    if (groups.contains(pg) && ("*".equals(pm) || method.equalsIgnoreCase(pm))) {
+                    if ((groups.contains("*") || groups.contains(pg))
+                            && ("*".equals(pm) || method.equalsIgnoreCase(pm))) {
                         return Mono.just(permission);
                     }
                 }
@@ -66,7 +67,7 @@ public class PermissionValidatorImpl implements PermissionValidator {
                 for (final PermissionDetails permission : permissions) {
                     final String pm = permission.getMethod();
                     final String pg = String.valueOf(permission.getGid());
-                    if (groups.contains(pg)
+                    if ((groups.contains("*") || groups.contains(pg))
                             && ("*".equals(pm) || method.equalsIgnoreCase(pm))
                             && String.valueOf(permission.getPid()).equals(project)) {
                         return Mono.just(permission);
