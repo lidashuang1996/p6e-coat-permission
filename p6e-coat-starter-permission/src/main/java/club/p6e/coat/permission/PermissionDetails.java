@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * 权限详情
+ * Permission Details
  *
  * @author lidashuang
  * @version 1.0

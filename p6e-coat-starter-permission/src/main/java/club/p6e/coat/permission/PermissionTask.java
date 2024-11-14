@@ -1,7 +1,7 @@
 package club.p6e.coat.permission;
 
 /**
- * 权限任务接口
+ * Permission Task
  *
  * @author lidashuang
  * @version 1.0
@@ -9,16 +9,16 @@ package club.p6e.coat.permission;
 public interface PermissionTask {
 
     /**
-     * 最新版本号
+     * Get Version
      *
-     * @return 版本号
+     * @return Version
      */
     public long version();
 
     /**
-     * 间隔时间
+     * Get Interval
      *
-     * @return 间隔时间
+     * @return Interval
      */
     public long interval();
 

@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * 权限验证器
+ * Permission Validator
  *
  * @author lidashuang
  * @version 1.0
@@ -15,21 +15,21 @@ public interface PermissionValidator {
     /**
      * 验证是否具备权限
      *
-     * @param path   请求的路径
-     * @param method 请求的方法
-     * @param groups 请求的用户权限组
-     * @return Mono/PermissionDetails 通过权限的权限信息对象
+     * @param path   Request path
+     * @param method Request method
+     * @param groups Permission group
+     * @return Mono/PermissionDetails Permission objects for matching path
      */
     public Mono<PermissionDetails> execute(String path, String method, List<String> groups);
 
     /**
      * 验证是否具备权限
      *
-     * @param path    请求的路径
-     * @param method  请求的方法
-     * @param project 请求的用户项目
-     * @param groups  请求的用户权限组
-     * @return Mono/PermissionDetails 通过权限的权限信息对象
+     * @param path    Request path
+     * @param method  Request method
+     * @param project Request project
+     * @param groups  Permission group
+     * @return Mono/PermissionDetails Permission objects for matching path
      */
     public Mono<PermissionDetails> execute(String path, String method, String project, List<String> groups);
 

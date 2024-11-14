@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 权限任务
+ * Permission Task Actuator
  *
  * @author lidashuang
  * @version 1.0
@@ -29,31 +29,31 @@ import java.util.List;
 public final class PermissionTaskActuator {
 
     /**
-     * 日志对象
+     * Inject log object
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(PermissionTaskActuator.class);
 
     /**
-     * 当前版本号
+     * Version
      */
     private long version = -1;
 
     /**
-     * 权限任务对象
+     * PermissionTask object
      */
     private final PermissionTask task;
 
     /**
-     * 权限路径匹配器
+     * PermissionPathMatcher object
      */
     private final PermissionPathMatcher matcher;
 
     /**
-     * 构造方法初始化
+     * Constructor initializers
      *
-     * @param task          权限任务对象
-     * @param matcher       权限路径匹配器
-     * @param taskScheduler 定时任务对象
+     * @param task          PermissionTask object
+     * @param matcher       PermissionPathMatcher object
+     * @param taskScheduler ThreadPoolTaskScheduler object
      */
     public PermissionTaskActuator(
             PermissionTask task,
@@ -70,15 +70,15 @@ public final class PermissionTaskActuator {
     }
 
     /**
-     * 执行任务 （定时触发的任务）
+     * Execute task
      */
-    public void execute() {
+    public synchronized void execute() {
         final LocalDateTime now = LocalDateTime.now();
         LOGGER.info("[TASK] ==> now: {}", now);
         LOGGER.info("[TASK] start executing permission update task.");
         final long currentVersion = task.version();
         if (version < currentVersion) {
-            if (Boolean.TRUE.equals(execute0(currentVersion))) {
+            if (execute0(currentVersion)) {
                 version = currentVersion;
                 matcher.deleteExpiredVersionData(version);
             }
@@ -89,20 +89,11 @@ public final class PermissionTaskActuator {
         LOGGER.info("[TASK] complete the task of executing permission updates.");
     }
 
-    /**
-     * 执行任务
-     *
-     * @return 执行任务的结果
-     */
     private boolean execute0(long version) {
         final List<PermissionDetails> list = execute1();
-        if (list.isEmpty()) {
-            return false;
-        } else {
-            LOGGER.info("[TASK] successfully read data, list data >>> [{}].", list.size());
-            list.forEach(item -> matcher.register(item.setVersion(version)));
-            return true;
-        }
+        LOGGER.info("[TASK] successfully read data, list data >>> [{}].", list.size());
+        list.forEach(item -> matcher.register(item.setVersion(version)));
+        return true;
     }
 
     private List<PermissionDetails> execute1() {
@@ -111,7 +102,7 @@ public final class PermissionTaskActuator {
         final List<PermissionModel> list = new ArrayList<>();
         final PermissionRepository repository = SpringUtil.getBean(PermissionRepository.class);
         do {
-            tmp = repository.findPermission(page++, 20).collectList().block();
+            tmp = repository.findPermissionList(page++, 20).block();
             if (tmp != null) {
                 list.addAll(tmp);
             }

@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 认证路径匹配器
+ * Permission Path Matcher
  *
  * @author lidashuang
  * @version 1.0
@@ -25,25 +25,25 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PermissionPathMatcher {
 
     /**
-     * 注入日志对象
+     * Inject log object
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(PermissionPathMatcher.class);
 
     /**
-     * 路径模式解析器
+     * PathPatternParser object
      */
     private final PathPatternParser parser = new PathPatternParser();
 
     /**
-     * 缓存需要拦截的路径匹配器
+     * PathPatternParser/PermissionDetails cache object
      */
     private final Map<PathPattern, List<PermissionDetails>> cache = new ConcurrentHashMap<>();
 
     /**
-     * 匹配路径
+     * Matching Path
      *
-     * @param path 路径内容
-     * @return 匹配请求的路径是否为拦截的路径地址
+     * @param path Path
+     * @return PermissionDetails/List object
      */
     public List<PermissionDetails> match(String path) {
         final List<PermissionDetails> result = new ArrayList<>();
@@ -58,9 +58,9 @@ public class PermissionPathMatcher {
     }
 
     /**
-     * 注册路径
+     * Cache register path
      *
-     * @param model 权限对象
+     * @param model PermissionDetails object
      */
     public void register(PermissionDetails model) {
         if (model != null
@@ -85,9 +85,9 @@ public class PermissionPathMatcher {
     }
 
     /**
-     * 卸载路径
+     * Cache unregister path
      *
-     * @param path 路径内容
+     * @param path Path
      */
     @SuppressWarnings("ALL")
     public void unregister(PathPattern path) {
@@ -95,9 +95,9 @@ public class PermissionPathMatcher {
     }
 
     /**
-     * 删除过期版本的权限数据
+     * Delete expired version permission data
      *
-     * @param version 版本号
+     * @param version Version
      */
     public void deleteExpiredVersionData(long version) {
         for (final PathPattern key : cache.keySet()) {

@@ -6,14 +6,16 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * 权限模型
+ * Permission Model
  *
  * @author lidashuang
  * @version 1.0
  */
+@SuppressWarnings("ALL")
 @Data
 @Accessors(chain = true)
 public class PermissionModel implements Serializable {
+
     private Integer oid;
     private Integer pid;
 
@@ -28,4 +30,5 @@ public class PermissionModel implements Serializable {
 
     private String rConfig;
     private String rAttribute;
+
 }

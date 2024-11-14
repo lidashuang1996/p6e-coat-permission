@@ -8,11 +8,12 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.io.Serializable;
 
 /**
- * 权限组模型
+ * Permission Url Group Model
  *
  * @author lidashuang
  * @version 1.0
  */
+@SuppressWarnings("ALL")
 @Data
 @Accessors(chain = true)
 @Table(PermissionUrlGroupModel.TABLE)

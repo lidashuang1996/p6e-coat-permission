@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
- * 权限存储库
+ * Permission Repository
  *
  * @author lidashuang
  * @version 1.0
@@ -23,48 +25,78 @@ import reactor.core.publisher.Mono;
 public class PermissionRepository {
 
     /**
-     * 模板对象
+     * R2dbcEntityTemplate object
      */
     private final R2dbcEntityTemplate template;
 
     /**
-     * 构造方法初始化
+     * Constructor initializers
      *
-     * @param template 模板对象
+     * @param template R2dbcEntityTemplate object
      */
     public PermissionRepository(R2dbcEntityTemplate template) {
         this.template = template;
     }
 
-    public Flux<PermissionModel> findPermission(Integer page, Integer size) {
+    /**
+     * Query permission list
+     *
+     * @param page Page Length
+     * @param size Size Length
+     * @return PermissionModel/List/Mono object
+     */
+    public Mono<List<PermissionModel>> findPermissionList(Integer page, Integer size) {
         return findPermissionUrl(page, size)
                 .flatMap(this::findPermissionUrlGroupAssociationUrl)
-                .flatMap(this::findPermissionUrlGroup);
+                .flatMap(this::findPermissionUrlGroup)
+                .collectList();
     }
 
+    /**
+     * Query permission url list
+     *
+     * @param page Page Length
+     * @param size Size Length
+     * @return PermissionModel/Flux object
+     */
     private Flux<PermissionModel> findPermissionUrl(Integer page, Integer size) {
-        return template.select(
-                Query.empty().sort(Sort.by(Sort.Order.asc(
-                        PermissionUrlModel.ID))).offset((long) (page - 1) * size).limit(size),
-                PermissionUrlModel.class
+        return template.select(Query
+                .empty()
+                .sort(Sort.by(Sort.Order.asc(PermissionUrlModel.ID)))
+                .offset((long) (page - 1) * size)
+                .limit(size), PermissionUrlModel.class
         ).map(m -> new PermissionModel()
-                .setOid(m.getOid()).setPid(m.getPid())
-                .setUid(m.getId()).setUUrl(m.getUrl())
-                .setUBaseUrl(m.getBaseUrl()).setUMethod(m.getMethod())
+                .setOid(m.getOid())
+                .setPid(m.getPid())
+                .setUid(m.getId())
+                .setUUrl(m.getUrl())
+                .setUBaseUrl(m.getBaseUrl())
+                .setUMethod(m.getMethod())
         );
     }
 
+    /**
+     * Query permission url group association url list
+     *
+     * @param pm PermissionModel object
+     * @return PermissionModel/Flux object
+     */
     private Flux<PermissionModel> findPermissionUrlGroupAssociationUrl(PermissionModel pm) {
-        return template.select(
-                Query.query(Criteria
+        return template.select(Query
+                .query(Criteria
                         .where(PermissionUrlGroupAssociationUrlModel.UID).is(pm.getUid())
                         .and(PermissionUrlGroupAssociationUrlModel.OID).is(pm.getOid())
                         .and(PermissionUrlGroupAssociationUrlModel.PID).is(pm.getPid())
-                ),
-                PermissionUrlGroupAssociationUrlModel.class
+                ), PermissionUrlGroupAssociationUrlModel.class
         ).map(m -> CopyUtil.run(pm, PermissionModel.class).setGid(m.getGid()).setRConfig(m.getConfig()).setRAttribute(m.getAttribute()));
     }
 
+    /**
+     * Query permission url group
+     *
+     * @param pm PermissionModel object
+     * @return PermissionModel/Flux object
+     */
     private Mono<PermissionModel> findPermissionUrlGroup(PermissionModel pm) {
         return template.selectOne(
                 Query.query(Criteria

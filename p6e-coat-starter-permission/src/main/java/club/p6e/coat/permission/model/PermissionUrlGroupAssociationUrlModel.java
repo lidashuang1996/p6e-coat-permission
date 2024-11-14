@@ -6,11 +6,12 @@ import lombok.experimental.Accessors;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * 权限 URL 关联权限组的模型
+ * Permission Url Group Association Url Model
  *
  * @author lidashuang
  * @version 1.0
  */
+@SuppressWarnings("ALL")
 @Data
 @Accessors(chain = true)
 @Table(PermissionUrlGroupAssociationUrlModel.TABLE)

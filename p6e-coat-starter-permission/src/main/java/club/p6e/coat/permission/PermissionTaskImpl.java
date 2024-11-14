@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.stereotype.Component;
 
 /**
- * 权限任务的默认实现类
+ * Permission Task Impl
  *
  * @author lidashuang
  * @version 1.0

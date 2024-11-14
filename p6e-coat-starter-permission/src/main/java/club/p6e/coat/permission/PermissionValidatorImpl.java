@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * 权限验证器默认的实现
+ * Permission Validator Impl
  *
  * @author lidashuang
  * @version 1.0
@@ -20,27 +20,19 @@ import java.util.List;
 public class PermissionValidatorImpl implements PermissionValidator {
 
     /**
-     * 权限路径匹配器
+     * PermissionPathMatcher object
      */
     private final PermissionPathMatcher matcher;
 
     /**
-     * 构造方法初始化
+     * Constructor initializers
      *
-     * @param matcher 权限路径匹配器
+     * @param matcher PermissionPathMatcher object
      */
     public PermissionValidatorImpl(PermissionPathMatcher matcher) {
         this.matcher = matcher;
     }
 
-    /**
-     * 验证是否具备权限
-     *
-     * @param path   请求的路径
-     * @param method 请求的方法
-     * @param groups 请求的用户权限组
-     * @return Mono/PermissionDetails 通过权限的权限信息对象
-     */
     @Override
     public Mono<PermissionDetails> execute(String path, String method, List<String> groups) {
         if (groups != null) {
@@ -67,9 +59,10 @@ public class PermissionValidatorImpl implements PermissionValidator {
                 for (final PermissionDetails permission : permissions) {
                     final String pm = permission.getMethod();
                     final String pg = String.valueOf(permission.getGid());
-                    if ((groups.contains("*") || groups.contains(pg))
-                            && ("*".equals(pm) || method.equalsIgnoreCase(pm))
-                            && String.valueOf(permission.getPid()).equals(project)) {
+                    final String pd = String.valueOf(permission.getPid());
+                    if (pd.equals(project)
+                            && (groups.contains("*") || groups.contains(pg))
+                            && ("*".equals(pm) || method.equalsIgnoreCase(pm))) {
                         return Mono.just(permission);
                     }
                 }
